@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>To-do list</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --page-bg: #f5f6f8;
+    --card-bg: #ffffff;
+    --text: #1c2024;
+    --muted: #6b7280;
+    --accent: #2563eb;
+    --danger: #b42318;
+    --border: #d7dbe0;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --page-bg: #14171a;
+      --card-bg: #1d2126;
+      --text: #f1f3f5;
+      --muted: #9aa3ad;
+      --accent: #6ea2ff;
+      --danger: #ff8a80;
+      --border: #343a41;
+    }
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    padding: 2rem 1rem;
+    min-height: 100vh;
+    background: var(--page-bg);
+    color: var(--text);
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+
+  main {
+    max-width: 34rem;
+    margin: 0 auto;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+
+  h1 {
+    margin: 0 0 1.25rem;
+    font-size: 1.5rem;
+  }
+
+  .add-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: flex-end;
+    margin-bottom: 1.25rem;
+  }
+
+  .add-form label {
+    flex-basis: 100%;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  .add-form input {
+    flex: 1 1 12rem;
+    padding: 0.55rem 0.7rem;
+    font: inherit;
+    color: inherit;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+
+  button {
+    font: inherit;
+    padding: 0.55rem 0.9rem;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    cursor: pointer;
+  }
+
+  .add-button {
+    background: var(--accent);
+    color: #ffffff;
+  }
+
+  .todo-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .todo-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+
+  .todo-label {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex: 1;
+    cursor: pointer;
+  }
+
+  .todo-checkbox {
+    width: 1.15rem;
+    height: 1.15rem;
+    margin: 0;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  .todo-item.done .todo-text {
+    text-decoration: line-through;
+    color: var(--muted);
+  }
+
+  .todo-delete {
+    background: transparent;
+    border-color: var(--border);
+    color: var(--danger);
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>To-do list</h1>
+
+  <form class="add-form" id="add-form">
+    <label for="new-item">New item</label>
+    <input id="new-item" name="new-item" type="text" autocomplete="off" placeholder="What needs doing?">
+    <button class="add-button" type="submit">Add</button>
+  </form>
+
+  <ul class="todo-list" id="todo-list"></ul>
+</main>
+
+<script>
+  (function () {
+    'use strict';
+
+    var form = document.getElementById('add-form');
+    var input = document.getElementById('new-item');
+    var list = document.getElementById('todo-list');
+
+    function createItem(text) {
+      var item = document.createElement('li');
+      item.className = 'todo-item';
+
+      var label = document.createElement('label');
+      label.className = 'todo-label';
+
+      var checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.className = 'todo-checkbox';
+
+      var textSpan = document.createElement('span');
+      textSpan.className = 'todo-text';
+      textSpan.textContent = text;
+
+      label.appendChild(checkbox);
+      label.appendChild(textSpan);
+
+      var removeButton = document.createElement('button');
+      removeButton.type = 'button';
+      removeButton.className = 'todo-delete';
+      removeButton.textContent = 'Delete';
+      removeButton.setAttribute('aria-label', 'Delete ' + text);
+
+      checkbox.addEventListener('change', function () {
+        item.classList.toggle('done', checkbox.checked);
+      });
+
+      removeButton.addEventListener('click', function () {
+        item.remove();
+      });
+
+      item.appendChild(label);
+      item.appendChild(removeButton);
+
+      return item;
+    }
+
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      var text = input.value.trim();
+      if (text === '') {
+        return;
+      }
+
+      list.appendChild(createItem(text));
+    });
+  })();
+</script>
+</body>
+</html>
